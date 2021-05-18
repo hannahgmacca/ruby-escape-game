@@ -10,8 +10,15 @@ class Game
   def run
     printWelcome
       while (game)
-      # take user input
-      # process input
+      puts """Welcome to the AirBnB escape game!
+
+      You have rented an AirBnB for the night and during your stay have realised that you are not the only guest.
+      In order to survive, you must interact with the apartment and try to escape.
+      Each interaction will bring you a hint or a step closer to your freedom
+      Then hen you can leave a one-star review of your memorable stay.
+
+      """
+      handleInput
       end
   end
 
