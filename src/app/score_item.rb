@@ -1,7 +1,10 @@
-class ScoreItem
-    att_accessor @score
+require_relative 'item'
+
+class ScoreItem < Item
+    attr_accessor :score
     
-    initalize(name, description, score)
-    super(name, description)
+    def initialize(name, collect_description, use_description, isKey, score)
+    super(name, collect_description, use_description, isKey)
     @score = score
+    end
 end

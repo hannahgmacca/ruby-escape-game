@@ -1,11 +1,9 @@
 class Item
-
-    def initalize(name, collect_description, use_description)
+    def initialize(name, collect_description, use_description, isKey)
             @name = name
-            @description = description
-    end
-
-    def collected
+            @collect_description = collect_description
+            @use_description = use_description
+            @isKey = isKey
     end
 
 end
