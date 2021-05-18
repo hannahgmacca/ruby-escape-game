@@ -3,10 +3,13 @@ class Room
     @name = name
     @description = description
     @isLocked = isLocked
+    @items = []
     @exits = {}
     end
 
     def setExits(direction, room)
         @exits << :direction => room
     end
+
+
 end
