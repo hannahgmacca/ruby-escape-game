@@ -12,15 +12,14 @@ require_relative 'app/player'
 class Game
     attr_accessor :run_game, :current_room, :score
 
-    def initialize(user_name)
-      @user_name = user_name
+    def initialize()
     end
 
   def run
     initializeEnvrionment
-    player = Player.new
+    @player = Player.new()
+    @current_room = @lroom
     @run_game = true
-    @current_room = "livingroom"
 
     puts """
       Welcome to the AirBnB escape game!
@@ -38,46 +37,79 @@ class Game
 
   def handleInput
     input = gets.strip
-    case input
-      when input == "exit" then @run_game = false
-      when input == "take" then takeItem
-      when input == "use" then useItem
-      when input == "go" then goRoom
+
+    ## user wants to exit
+    if input == 'quit'
+       @game_run = false
+    end
+
+    input_arr = input.split(" ")
+
+    ## user enters valid command but doesn't specify item or direction
+    input_arr = input.split(" ")
+    if input_arr.size > 1
+      command1 = input_arr[0]
+      command2 = input_arr[1]
+    else  
+      puts "I'll need more information than that"
+    end
+
+    ## find matching command
+    if command1 == "take"
+      takeItem(command2)
+    elsif command1 == "use"
+      useItem(command2)
+    elsif command1 == "go"
+      goRoom(command2)
+    else
+      puts "This is not a valid command"
     end
   end
 
   def initializeEnvrionment
     ## create items
-    key = Item.new("key", "the key required to escape. Head to the livingroom and use it before the ghost finds you!", "d", true)
-    phone = ScoreItem.new("phone", "a phone! But it's out of charge?", "You've used the phone to leave a good review and the ghost loved it! Your score has improved by one star.", false, 1)
-    charger = Item.new("phone charger", "a charging cable. I'm sure you could find some use for this somewhere", "You've charge the phone, now you can use it!", false)
-    orange_juice = ScoreItem.new("orange juice", "a half empty bottle of orange juice. I'm sure the host won't mind if you finish it off.", "You've just drank all the ghost's favourite juice :( Your AirBnB score has dropped one star.", false, -1)
-    toothbrush = ScoreItem.new("toothbrush", "a toothbrush. You sure could use some fresh breath", "Ew! You've grossed out the ghost and lost a star.", false, -1) 
+    @key = Item.new("key", "the key required to escape. Head to the livingroom and use it before the ghost finds you!", "d", true)
+    @phone = ScoreItem.new("phone", "a phone! But it's out of charge?", "You've used the phone to leave a good review and the ghost loved it! Your score has improved by one star.", false, 1)
+    @charger = Item.new("phone charger", "a charging cable. I'm sure you could find some use for this somewhere", "You've charge the phone, now you can use it!", false)
+    @orange_juice = ScoreItem.new("orange juice", "a half empty bottle of orange juice. I'm sure the host won't mind if you finish it off.", "You've just drank all the ghost's favourite juice :( Your AirBnB score has dropped one star.", false, -1)
+    @toothbrush = ScoreItem.new("toothbrush", "a toothbrush. You sure could use some fresh breath", "Ew! You've grossed out the ghost and lost a star.", false, -1) 
+    
+    ## store items together for validation
+    @game_items = [@key, @phone, @charger, @organge_juice, @toothbrush]
 
     ## create rooms
-    lroom_items = [charger]
-    lroom_exits = {:west => "bedroom"}
-    lroom = Room.new("livingroom","d",true, lroom_items, lroom_exits)
+    @lroom_items = [@charger]
+    @lroom_exits = {:west => @bedroom}
+    @lroom = Room.new("livingroom","d",true, @lroom_items, @lroom_exits)
 
-    broom_items = [phone, toothbrush]
-    broom_exits = {:east => "livingroom", :south => "kitchen"}
-    broom = Room.new("bedroom","d", false, broom_items, broom_exits)
+    @broom_items = [@phone, @toothbrush]
+    @broom_exits = {:east => "livingroom", :south => "kitchen"}
+    @broom = Room.new("bedroom","d", false, @broom_items, @broom_exits)
 
-    kitchen_items = [orange_juice, key]
-    kitchen_exits = {:north => "bedroom"}
-    kitchen = Room.new("kitchen", "d", false, kitchen_items, kitchen_exits)
+    @kitchen_items = [@orange_juice, @key]
+    @kitchen_exits = {:north => "bedroom"}
+    @kitchen = Room.new("kitchen", "d", false, @kitchen_items, @kitchen_exits)
   end
     
+  def takeItem(command)
+ 
+  end
+
+  def useItem(command)
+   
+  end
+
+  def goRoom(command)
+    if @current_room.getExit(command) == false
+      puts "That isn't an available room!"
+    else  
+      @current_room = @current_room.getExit(command)
+    end
+  end
+
+
+end
 end
 
-  def takeItem
-  end
-
-  def useItem
-  end
-
-  def goRoom
-  end
-
-game = Game.new("Hannah")
+game = Game.new()
 game.run

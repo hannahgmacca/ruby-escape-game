@@ -9,6 +9,7 @@ class StartMenu
         
             if user_select == "Start"
                 system("clear")
+                
                 puts "Are you ready?".center(112)
                 # loading bar here
                 break

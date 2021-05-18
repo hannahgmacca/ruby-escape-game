@@ -1,5 +1,5 @@
 class Player
-    attr_accessor :name, :backpack
+    attr_accessor :backpack
 
     def initialize
         @backpack = []
