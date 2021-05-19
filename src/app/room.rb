@@ -11,24 +11,18 @@ class Room
         @exits << direction => room
     end
 
-    def hasItems(item)
+    def hasItems?(item)
         return true if @items.include
     end
 
-    # ## for a given command, return the matching object
-    # def getRoomItem(command)
-    #     @items.each |item|
-    #       if command == item.name
-    #         @items - item
-    #       else
-    #         puts "This item isn't here to take"
-    #       end
-    # end
+    def room_name
+        @name.to_s
+    end
 
     ## if room has this exit then return the room it leads to
-    def getExit(command)
+    def hasExit?(command)
       @exits.each do |direction, room|
-        if direction == command
+        if direction == command.to_sym
             return room
         else  
             return false
@@ -36,15 +30,8 @@ class Room
       end
     end
 
-    # def hasExit(command)
-    #     if 
-    # end
-
-
-
-
-
-
-
+    def print_exits
+        @exits.each { |direction, room| puts "#{direction} leads to #{room}" }
+    end
 
 end

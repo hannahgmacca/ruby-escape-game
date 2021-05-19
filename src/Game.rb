@@ -29,6 +29,9 @@ class Game
       Each interaction will bring you a hint or a step closer to your freedom
 
       """
+      # puts @current_room.room_name
+      # puts @current_room.hasExit?("west")
+      # @current_room.print_exits
 
       while (@run_game)
         handleInput
@@ -36,33 +39,31 @@ class Game
   end
 
   def handleInput
-    input = gets.strip
+    input = gets.chomp
 
-    ## user wants to exit
+    # user wants to exit
     if input == 'quit'
        @game_run = false
+       puts "Thanks for playing!"
+       exit
     end
 
     input_arr = input.split(" ")
-
-    ## user enters valid command but doesn't specify item or direction
-    input_arr = input.split(" ")
-    if input_arr.size > 1
+    if input_arr.size > 1 # checks if user has entered second command
       command1 = input_arr[0]
       command2 = input_arr[1]
+        ## find matching command
+        if command1 == "take"
+          takeItem(command2)
+        elsif command1 == "use"
+          useItem(command2)
+        elsif command1 == "go"
+          goRoom(command2)
+        else
+          puts "This is not a valid command"
+        end
     else  
       puts "I'll need more information than that"
-    end
-
-    ## find matching command
-    if command1 == "take"
-      takeItem(command2)
-    elsif command1 == "use"
-      useItem(command2)
-    elsif command1 == "go"
-      goRoom(command2)
-    else
-      puts "This is not a valid command"
     end
   end
 
@@ -75,11 +76,11 @@ class Game
     @toothbrush = ScoreItem.new("toothbrush", "a toothbrush. You sure could use some fresh breath", "Ew! You've grossed out the ghost and lost a star.", false, -1) 
     
     ## store items together for validation
-    @game_items = [@key, @phone, @charger, @organge_juice, @toothbrush]
+    @game_items = [@key, @phone, @charger, @orange_juice, @toothbrush]
 
     ## create rooms
     @lroom_items = [@charger]
-    @lroom_exits = {:west => @bedroom}
+    @lroom_exits = {:west => "bedroom"}
     @lroom = Room.new("livingroom","d",true, @lroom_items, @lroom_exits)
 
     @broom_items = [@phone, @toothbrush]
@@ -100,16 +101,17 @@ class Game
   end
 
   def goRoom(command)
-    if @current_room.getExit(command) == false
+    if @current_room.hasExit?(command.to_sym) == false
       puts "That isn't an available room!"
     else  
-      @current_room = @current_room.getExit(command)
+      @current_room = @current_room.hasExit?(command.to_sym)
+      puts "You have entered the #{@current_room}!"
     end
   end
 
 
 end
-end
+
 
 game = Game.new()
 game.run
