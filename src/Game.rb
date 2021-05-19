@@ -1,19 +1,14 @@
-# require 'require_all'
 require 'colorize'
 require_relative 'app/score_item'
 require_relative 'app/room'
 require_relative 'app/player'
-
 
 # Creates and stores all game objects
 # Begins with printing progress bar and welcome message to user,
 # followed by the available commands user can type
 # Class will wait for user input until winning/ losingcondition is met or user types 'quit'
 class Game
-    attr_accessor :run_game, :current_room, :score
-
-    def initialize()
-    end
+    attr_accessor :run_game, :current_room, :score, :current_item
 
   def run
     initializeEnvrionment
@@ -22,20 +17,21 @@ class Game
     @run_game = true
 
     puts """
+      
       Welcome to the AirBnB escape game!
 
       You have rented an AirBnB for the night and during your stay have realised that you are not the only guest.
       In order to survive, you must interact with the apartment and try to escape.
-      Each interaction will bring you a hint or a step closer to your freedom
+
+      Each interaction will bring you a hint or a step closer to your freedom.
 
       """
-      # puts @current_room.room_name
-      # puts @current_room.hasExit?("west")
-      # @current_room.print_exits
 
       while (@run_game)
-        handleInput
+        print_commands
+        puts handleInput
       end
+      exit
   end
 
   def handleInput
@@ -43,75 +39,104 @@ class Game
 
     # user wants to exit
     if input == 'quit'
-       @game_run = false
-       puts "Thanks for playing!"
-       exit
-    end
-
-    input_arr = input.split(" ")
-    if input_arr.size > 1 # checks if user has entered second command
-      command1 = input_arr[0]
-      command2 = input_arr[1]
-        ## find matching command
-        if command1 == "take"
-          takeItem(command2)
-        elsif command1 == "use"
-          useItem(command2)
-        elsif command1 == "go"
-          goRoom(command2)
-        else
-          puts "This is not a valid command"
-        end
-    else  
-      puts "I'll need more information than that"
+       @run_game = false
+       return "Thanks for playing!"
+    else
+      input_arr = input.split(" ")
+      if input_arr.size > 1 # checks if user has entered second command
+        command1 = input_arr[0]
+        command2 = input_arr[1]
+          ## find matching command
+          if command1 == "take"
+            takeItem(command2)
+          elsif command1 == "use"
+            useItem(command2)
+          elsif command1 == "go"
+            goRoom(command2)
+          else
+            return "This is not a valid command"
+          end
+      else  
+        return "I'll need more information than that"
+      end
     end
   end
 
   def initializeEnvrionment
     ## create items
-    @key = Item.new("key", "the key required to escape. Head to the livingroom and use it before the ghost finds you!", "d", true)
-    @phone = ScoreItem.new("phone", "a phone! But it's out of charge?", "You've used the phone to leave a good review and the ghost loved it! Your score has improved by one star.", false, 1)
-    @charger = Item.new("phone charger", "a charging cable. I'm sure you could find some use for this somewhere", "You've charge the phone, now you can use it!", false)
-    @orange_juice = ScoreItem.new("orange juice", "a half empty bottle of orange juice. I'm sure the host won't mind if you finish it off.", "You've just drank all the ghost's favourite juice :( Your AirBnB score has dropped one star.", false, -1)
-    @toothbrush = ScoreItem.new("toothbrush", "a toothbrush. You sure could use some fresh breath", "Ew! You've grossed out the ghost and lost a star.", false, -1) 
+    @key = Item.new("key", "Head to the livingroom and use it before the ghost finds you!", "d", true)
+    @phone = ScoreItem.new("phone", "But it's out of charge?", "You've used the phone to leave a good review and the ghost loved it! Your score has improved by one star.", false, 1)
+    @charger = Item.new("charger", "You could use this to charge up your phone!", "You've charge the phone, now you can use it!", false)
+    @orange_juice = ScoreItem.new("orange juice", "I'm sure the host won't mind if you finish it off.", "You've just drank all the ghost's favourite juice :( Your AirBnB score has dropped one star.", false, -1)
+    @toothbrush = ScoreItem.new("toothbrush", "You sure could use some fresh breath", "Ew! You've grossed out the ghost and lost a star.", false, -1) 
     
+    # for items that need to be used in a certain order
+    @charger.give_prerequisite("phone")
+
     ## store items together for validation
     @game_items = [@key, @phone, @charger, @orange_juice, @toothbrush]
 
     ## create rooms
-    @lroom_items = [@charger]
+    @lroom_items = ["charger"]
     @lroom_exits = {:west => "bedroom"}
     @lroom = Room.new("livingroom","d",true, @lroom_items, @lroom_exits)
 
-    @broom_items = [@phone, @toothbrush]
+    @broom_items = ["phone", "toothbrush"]
     @broom_exits = {:east => "livingroom", :south => "kitchen"}
     @broom = Room.new("bedroom","d", false, @broom_items, @broom_exits)
 
-    @kitchen_items = [@orange_juice, @key]
+    @kitchen_items = ["orange juice", "key"]
     @kitchen_exits = {:north => "bedroom"}
     @kitchen = Room.new("kitchen", "d", false, @kitchen_items, @kitchen_exits)
   end
     
   def takeItem(command)
- 
-  end
-
-  def useItem(command)
-   
-  end
-
-  def goRoom(command)
-    if @current_room.hasExit?(command.to_sym) == false
-      puts "That isn't an available room!"
-    else  
-      @current_room = @current_room.hasExit?(command.to_sym)
-      puts "You have entered the #{@current_room}!"
+    if @current_room.hasItem?(command) == false # item isn't in current room
+      return "This item isn't here"
+    else
+      # search for instance of item
+      @game_items.each do |item|
+        if item.isItem?(command)
+          @current_item = item
+        end
+      end
+  
+      # remove from room and add to backpack
+      @current_room.removeItem(command)
+      @player.pickUp(command)
+      puts "You have picked up the " + @current_item.print_name
+      puts @current_item.print_collected
     end
   end
 
+  ## validates item is in backpack then removes it
+  def useItem(command)
+   item = @player.hasItem?(command)
+   if item == false # if this item isn't in backpack
+    return "You aren't carrying this item."
+   else  
+    @player.removeItem(item)
+    return "You have used the #{item.name}!\n\n#{item.use_description}"
+   end
+  end
+
+  ## validates user input and then changes current room
+  def goRoom(command)
+    if @current_room.hasExit?(command.to_sym) == false
+      return "That isn't an available room!"
+    else  
+      @current_room = @current_room.hasExit?(command.to_sym)
+      return "You have entered the #{@current_room.print_name}!"
+    end
+  end
+
+  def print_commands
+    puts "Your available commands are:\ngo take use help\n\n"
+    puts "Directions: "
+    current_room.print_exits
+  end
 
 end
-
 
 game = Game.new()
 game.run
