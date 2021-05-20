@@ -1,5 +1,6 @@
 # ruby src/game.rb
 require 'rainbow'
+require 'artii'
 require_relative 'app/score_item'
 require_relative 'app/room'
 require_relative 'app/player'
@@ -15,20 +16,22 @@ class Game
     initialize_environment
     @player = Player.new()
     @current_room = @lroom
+    @score = 3
     @run_game = true
 
     puts Rainbow("""
+
       Welcome to the AirBnB escape game!
       You have rented an AirBnB for the night and during your stay have realised that you are not the only guest.
       In order to survive, you must interact with the apartment and try to escape.
       Each interaction will bring you a hint or a step closer to your freedom.
       """).white.bg(:red)
-      
-      while (@run_game)
-        print_commands
-        handle_input
-      end
-      exit
+
+    while (@run_game)
+      print_commands
+      handle_input
+    end
+    exit
   end
 
   def handle_input
@@ -68,6 +71,10 @@ class Game
     @orange_juice = ScoreItem.new("orange juice", "I'm sure the host won't mind if you finish it off.", "You've just drank all the ghost's favourite juice :( Your AirBnB score has dropped one star.", false, -1)
     @toothbrush = ScoreItem.new("toothbrush", "You sure could use some fresh breath", "Ew! You've grossed out the ghost and lost a star.", false, -1) 
     
+    # store characters for printing score
+    @star1 = "\u2b50"
+    @star2 = "\u2606"
+
     # for items that need to be used in a certain order
     @charger.give_prerequisite("phone")
 
@@ -111,18 +118,32 @@ class Game
 
   ## validates item is in backpack then removes it
   def use_item(command)
-   if @player.has_item?(command)
-    # search for instance of this item
-    @game_items.each do |item|
-      if item.is_item?(command)
-        @current_item = item
+    if @player.has_item?(command)
+
+      # search for instance of this item
+      @game_items.each do |item|
+        if item.is_item?(command)
+          @current_item = item
+        end
       end
+      @player.remove_item(command)
+      puts "\n#{@current_item.use_description}\n"
+
+      # increase / decrease AirBNB score
+      if @current_item.is_a? ScoreItem
+        @score += @current_item.score
+        puts "You now have a guest rating of #{@score}"
+        puts @star1.encode('utf-8') * @score
+      elsif @current_item.is_key?
+        puts "Congratulations! You escaped the AirBnB"
+        puts "You escaped with a rating of: \n"
+        puts @star1.encode('utf-8') * @score
+        puts "\n\n\nThanks for playing!\n"
+        @run_game = false
+      end
+    else  
+      puts "You aren't carrying this item.\n"
     end
-    @player.remove_item(command)
-    puts "\n#{@current_item.use_description}\n"
-   else  
-    puts "You aren't carrying this item.\n"
-   end
   end
 
   ## validates user is in room with this exit and then changes current room
@@ -148,7 +169,7 @@ class Game
     if @current_room.has_items?
       puts "\nItems available: "
       @current_room.print_items
-      puts "\n\n"
+      puts "\n"
     else
       puts "\nThere are no items in this room"
       puts "\n"

@@ -8,7 +8,6 @@ class Player
   ## add item to players backpack
   def pick_up(item)
     @backpack << item
-    puts @backpack.to_s
   end
 
   ## remove item from players backpack (whether to use or drop)
