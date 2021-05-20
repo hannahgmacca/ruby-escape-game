@@ -6,16 +6,16 @@ class Item
     @isKey = isKey
   end
 
-  def print_name
-    @name.to_s
+  def name
+    @name
   end
 
-  def print_collected
-    @collect_description.to_s
+  def collect_description
+    @collect_description
   end 
 
-  def print_used
-    @use_description.to_s
+  def use_description
+    @use_description
   end
 
   def is_key?
@@ -27,7 +27,7 @@ class Item
     @prerequisite = item
   end
 
-  def isItem?(item_string)
+  def is_item?(item_string)
     return true if @name == item_string
   end
 

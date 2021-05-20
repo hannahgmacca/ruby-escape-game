@@ -6,16 +6,17 @@ class Player
   end
 
   ## add item to players backpack
-  def pickUp(item)
+  def pick_up(item)
     @backpack << item
+    puts @backpack.to_s
   end
 
   ## remove item from players backpack (whether to use or drop)
-  def removeItem(item)
+  def remove_item(item)
     @backpack.delete(item)
   end
 
-  def hasItem?(item)
+  def has_item?(item)
     return true if @backpack.include?(item)
   end
 

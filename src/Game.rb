@@ -1,3 +1,4 @@
+# ruby src/game.rb
 require 'rainbow'
 require_relative 'app/score_item'
 require_relative 'app/room'
@@ -11,7 +12,7 @@ class Game
     attr_accessor :run_game, :current_room, :score, :current_item
 
   def run
-    initializeEnvrionment
+    initialize_environment
     @player = Player.new()
     @current_room = @lroom
     @run_game = true
@@ -25,14 +26,14 @@ class Game
       
       while (@run_game)
         print_commands
-        handleInput
+        handle_input
       end
       exit
   end
 
-  def handleInput
+  def handle_input
     input = gets.chomp
-    
+    system('clear')
     # user wants to exit
     if input == 'quit'
        @run_game = false
@@ -44,11 +45,11 @@ class Game
         command2 = input_arr[1]
           ## find matching command
           if command1 == "take"
-            takeItem(command2)
+            take_item(command2)
           elsif command1 == "use"
-            useItem(command2)
+            use_item(command2)
           elsif command1 == "go"
-            goRoom(command2)
+            go_room(command2)
           else
             puts "This is not a valid command"
           end
@@ -59,7 +60,7 @@ class Game
 
   end
 
-  def initializeEnvrionment
+  def initialize_environment
     ## create items
     @key = Item.new("key", "Head to the livingroom and use it before the ghost finds you!", "d", true)
     @phone = ScoreItem.new("phone", "But it's out of charge?", "You've used the phone to leave a good review and the ghost loved it! Your score has improved by one star.", false, 1)
@@ -90,38 +91,42 @@ class Game
 
   end
     
-  def takeItem(command)
-    if @current_room.hasItem?(command) == false # item isn't in current room
-      puts "This item isn't here"
+  def take_item(command)
+    if @current_room.has_item?(command) == false # item isn't in current room
+      puts "This item isn't here\n"
     else
       # search for instance of item
       @game_items.each do |item|
-        if item.isItem?(command)
+        if item.is_item?(command)
           @current_item = item
         end
       end
-  
       # remove from room and add to backpack
-      @current_room.removeItem(command)
-      @player.pickUp(command)
-      puts "You have picked up the " + @current_item.print_name
-      puts @current_item.print_collected
+      @current_room.remove_item(command)
+      @player.pick_up(command)
+      puts "You have picked up a #{@current_item.name}"
+      puts @current_item.collect_description + "\n\n"
     end
   end
 
   ## validates item is in backpack then removes it
-  def useItem(command)
-   item = @player.hasItem?(command)
-   if item == false # if this item isn't in backpack
-    puts "You aren't carrying this item."
+  def use_item(command)
+   if @player.has_item?(command)
+    # search for instance of this item
+    @game_items.each do |item|
+      if item.is_item?(command)
+        @current_item = item
+      end
+    end
+    @player.remove_item(command)
+    puts "\n#{@current_item.use_description}\n"
    else  
-    @player.removeItem(item)
-    puts "You have used the #{item.name}!\n\n#{item.use_description}"
+    puts "You aren't carrying this item.\n"
    end
   end
 
   ## validates user is in room with this exit and then changes current room
-  def goRoom(command)
+  def go_room(command)
     if @current_room.has_exit?(command)  
        exit_room = @current_room.get_exit(command) # string of room user is trying to enter
        # search for instance of room
@@ -130,16 +135,24 @@ class Game
           @current_room = room # store instance of next room in current room
         end
       end
-      puts "You have entered the #{@current_room.print_name}!"
+      puts "You have entered the #{@current_room.print_name}!\n"
     else  
-      puts "That is not a direction you can travel."
+      puts "That is not a direction you can travel.\n"
     end
   end
 
   def print_commands
     puts "Your available commands are:\ngo take use help\n\n"
-    puts "Directions: "
-    current_room.print_exits
+    puts "Directions: \n"
+    @current_room.print_exits
+    if @current_room.has_items?
+      puts "\nItems available: "
+      @current_room.print_items
+      puts "\n\n"
+    else
+      puts "\nThere are no items in this room"
+      puts "\n"
+    end
   end
 
 end

@@ -36,7 +36,7 @@ class Room
     end
 
     def print_exits
-      @exits.each { |direction, exit| print "#{direction}" }
+      @exits.each { |direction, exit| print "#{direction} " }
       puts "\n"
     end
 
@@ -45,11 +45,15 @@ class Room
     end
 
     def print_items
-      @items.each { |item| print "#{item}" }
+      @items.each { |item| print "#{item} " }
       puts "\n"
     end
 
     def is_room?(room_string)
       return true if @name == room_string
+    end
+
+    def has_items?
+      return true if @items.empty? == false
     end
 end
