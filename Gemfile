@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
-gem "require_all"
+gem 'rainbow', '~> 3.0'
 gem "tty-prompt"
+gem "tty-progressbar"
 gem "paint"

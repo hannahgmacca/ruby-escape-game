@@ -7,36 +7,36 @@ class Room
     @exits = exits
     end
 
-    def setExits(direction, room)
-        @exits << direction => room
-    end
-
     def room_name
         @name.to_s
     end
 
     ## if room has this exit then return the room it leads to
-    def hasExit?(command)
+    def has_exit?(direction)
+      return true if @exits.has_key?(direction.to_sym)
+    end
+
+    def get_exit(command)
       @exits.each do |direction, room|
-        if direction == command.to_sym
-            return room
+        if direction.to_s == command
+          return room
         else  
-            return false
+          puts "failed"
         end
       end
     end
 
     ## if room has this item then return item
-    def hasItem?(command)
+    def has_item?(command)
       return true if @items.include?(command)
     end
 
-    def removeItem(item)
+    def remove_item(item)
       @items.delete(item)
     end
 
     def print_exits
-      @exits.each { |direction| print "#{direction}" }
+      @exits.each { |direction, exit| print "#{direction}" }
       puts "\n"
     end
 
@@ -49,4 +49,7 @@ class Room
       puts "\n"
     end
 
+    def is_room?(room_string)
+      return true if @name == room_string
+    end
 end

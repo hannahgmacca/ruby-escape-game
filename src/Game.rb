@@ -1,4 +1,4 @@
-require 'colorize'
+require 'rainbow'
 require_relative 'app/score_item'
 require_relative 'app/room'
 require_relative 'app/player'
@@ -16,31 +16,27 @@ class Game
     @current_room = @lroom
     @run_game = true
 
-    puts """
-      
+    puts Rainbow("""
       Welcome to the AirBnB escape game!
-
       You have rented an AirBnB for the night and during your stay have realised that you are not the only guest.
       In order to survive, you must interact with the apartment and try to escape.
-
       Each interaction will bring you a hint or a step closer to your freedom.
-
-      """
-
+      """).white.bg(:red)
+      
       while (@run_game)
         print_commands
-        puts handleInput
+        handleInput
       end
       exit
   end
 
   def handleInput
     input = gets.chomp
-
+    
     # user wants to exit
     if input == 'quit'
        @run_game = false
-       return "Thanks for playing!"
+       puts "Thanks for playing!"
     else
       input_arr = input.split(" ")
       if input_arr.size > 1 # checks if user has entered second command
@@ -54,12 +50,13 @@ class Game
           elsif command1 == "go"
             goRoom(command2)
           else
-            return "This is not a valid command"
+            puts "This is not a valid command"
           end
       else  
-        return "I'll need more information than that"
+        puts "I'll need more information than that"
       end
     end
+
   end
 
   def initializeEnvrionment
@@ -73,9 +70,6 @@ class Game
     # for items that need to be used in a certain order
     @charger.give_prerequisite("phone")
 
-    ## store items together for validation
-    @game_items = [@key, @phone, @charger, @orange_juice, @toothbrush]
-
     ## create rooms
     @lroom_items = ["charger"]
     @lroom_exits = {:west => "bedroom"}
@@ -88,11 +82,17 @@ class Game
     @kitchen_items = ["orange juice", "key"]
     @kitchen_exits = {:north => "bedroom"}
     @kitchen = Room.new("kitchen", "d", false, @kitchen_items, @kitchen_exits)
+
+    # store items together for validation
+    @game_items = [@key, @phone, @charger, @orange_juice, @toothbrush]
+    # store rooms together for validation
+    @game_rooms = [@kitchen, @broom, @lroom]
+
   end
     
   def takeItem(command)
     if @current_room.hasItem?(command) == false # item isn't in current room
-      return "This item isn't here"
+      puts "This item isn't here"
     else
       # search for instance of item
       @game_items.each do |item|
@@ -113,20 +113,26 @@ class Game
   def useItem(command)
    item = @player.hasItem?(command)
    if item == false # if this item isn't in backpack
-    return "You aren't carrying this item."
+    puts "You aren't carrying this item."
    else  
     @player.removeItem(item)
-    return "You have used the #{item.name}!\n\n#{item.use_description}"
+    puts "You have used the #{item.name}!\n\n#{item.use_description}"
    end
   end
 
-  ## validates user input and then changes current room
+  ## validates user is in room with this exit and then changes current room
   def goRoom(command)
-    if @current_room.hasExit?(command.to_sym) == false
-      return "That isn't an available room!"
+    if @current_room.has_exit?(command)  
+       exit_room = @current_room.get_exit(command) # string of room user is trying to enter
+       # search for instance of room
+       @game_rooms.each do |room|
+        if room.is_room?(exit_room)
+          @current_room = room # store instance of next room in current room
+        end
+      end
+      puts "You have entered the #{@current_room.print_name}!"
     else  
-      @current_room = @current_room.hasExit?(command.to_sym)
-      return "You have entered the #{@current_room.print_name}!"
+      puts "That is not a direction you can travel."
     end
   end
 

@@ -1,4 +1,6 @@
 require 'tty-prompt'
+require "tty-progressbar"
+require_relative '../game.rb'
 
 class StartMenu
 
@@ -9,9 +11,17 @@ class StartMenu
         
             if user_select == "Start"
                 system("clear")
-                
-                puts "Are you ready?".center(112)
-                # loading bar here
+                sleep(3)
+
+                # LOADING BAR
+                bar = TTY::ProgressBar.new("downloading [:bar]", total: 30)
+                30.times do
+                    sleep(0.1)
+                    puts "Are you ready?".center(112)
+                    bar.advance  # by default increases by 1
+                  end
+                # game = Game.new()
+                # game.run
                 break
             elsif user_select == "Leaderboard"
                 puts "LEADERBOARD".center(112)
@@ -22,3 +32,6 @@ class StartMenu
 
     end
 end
+
+menu = StartMenu.new
+menu.menu
