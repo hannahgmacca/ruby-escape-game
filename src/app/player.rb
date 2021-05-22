@@ -19,4 +19,9 @@ class Player
     return true if @backpack.include?(item)
   end
 
+  def print_backpack
+    puts "You are carrying: \n"
+    @backpack.each { |item| puts "#{item}" }
+  end
+
 end
