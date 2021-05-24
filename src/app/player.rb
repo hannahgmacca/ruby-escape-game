@@ -20,8 +20,12 @@ class Player
   end
 
   def print_backpack
-    puts "You are carrying: \n"
-    @backpack.each { |item| puts "#{item}" }
+    if @backpack.empty?
+      puts "You aren't carrying anything"
+    else
+      puts "You are carrying: \n"
+      @backpack.each { |item| puts item}
+    end
   end
 
 end

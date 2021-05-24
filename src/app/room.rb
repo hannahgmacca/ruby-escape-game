@@ -20,8 +20,6 @@ class Room
       @exits.each do |direction, room|
         if direction.to_s == command
           return room
-        else  
-          puts "failed"
         end
       end
     end

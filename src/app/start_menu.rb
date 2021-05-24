@@ -1,30 +1,52 @@
 require 'tty-prompt'
 require "tty-progressbar"
 require 'artii'
+require 'gosu'
+require_relative 'game'
+
 
 class StartMenu
+    def initialize
+        @program_run = true
+    end
 
     def menu
-        loop do
+        while @program_run
+            logo
             prompt = TTY::Prompt.new
-            user_select = prompt.select("Would you like to begin?".center(112), %w(Start Leaderboard Quit))
+            user_select = prompt.select("Would you like to begin?".center(112), %w(Start Leaderboard:InDevelopment Quit))
             if user_select == "Start"
                 system('clear')
                 puts "\n\n\n\n\n\n"
-                # LOADING BAR
+                # Loading bar
                 bar = TTY::ProgressBar.new("loading [:bar]".center(112), total: 30, bar_format: :box)
                 30.times do
                     sleep(0.1)
                     bar.advance  # by default increases by 1
                 end
                 system('clear')
-                break
-            elsif user_select == "Leaderboard"
-                puts "LEADERBOARD".center(112)
+                # New game
+                @game = Game.new
+                @game.run
             elsif user_select == "Quit"
                 exit
             end
         end
-
     end
 end
+
+def logo
+    puts"
+
+
+    ░█████╗░██╗██████╗░██████╗░███╗░░██╗██████╗░  ███████╗░██████╗░█████╗░░█████╗░██████╗░███████╗
+    ██╔══██╗██║██╔══██╗██╔══██╗████╗░██║██╔══██╗  ██╔════╝██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔════╝
+    ███████║██║██████╔╝██████╦╝██╔██╗██║██████╦╝  █████╗░░╚█████╗░██║░░╚═╝███████║██████╔╝█████╗░░
+    ██╔══██║██║██╔══██╗██╔══██╗██║╚████║██╔══██╗  ██╔══╝░░░╚═══██╗██║░░██╗██╔══██║██╔═══╝░██╔══╝░░
+    ██║░░██║██║██║░░██║██████╦╝██║░╚███║██████╦╝  ███████╗██████╔╝╚█████╔╝██║░░██║██║░░░░░███████╗
+    ╚═╝░░╚═╝╚═╝╚═╝░░╚═╝╚═════╝░╚═╝░░╚══╝╚═════╝░  ╚══════╝╚═════╝░░╚════╝░╚═╝░░╚═╝╚═╝░░░░░╚══════╝
+    
+".colorize(:blue)
+end  
+start = StartMenu.new
+start.menu
