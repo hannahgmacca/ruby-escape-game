@@ -11,13 +11,13 @@ require_relative 'player'
 class Game
     attr_accessor :run_game, :current_room, :score, :current_item
 
-  def initialize
+  def initialize()
     initialize_environment
     @player = Player.new()
     @current_room = @lroom
     @score = 3
     @run_game = true
-    @used_items = []
+    # @player_moves = player_moves
   end
 
   def run
@@ -72,9 +72,8 @@ class Game
     @charger = ScoreItem.new("charger", "You could use this to charge up your phone!", "You've charged the phone.", false, 1)
     @juice = ScoreItem.new("juice", "I'm sure the host won't mind if you finish it off.", "You've just drank all the ghost's favourite juice :( Your AirBnB score has dropped one star.", false, -1)
     @toothbrush = ScoreItem.new("toothbrush", "You sure could use some fresh breath", "Ew! You've grossed out the ghost and lost a star.", false, -1)
-    # Store start characters used to print score
+    # Store star characters used to print score
     @star1 = "\u2b50"
-    @star2 = "\u2606"
     ## Create rooms and store items
     # livingroom
     @lroom_items = ["charger"]
@@ -109,7 +108,7 @@ class Game
       end
       @current_room.remove_item(command)
       @player.pick_up(command)
-      puts "You have picked up a #{@current_item.name}"
+      puts "\nYou have picked up a #{@current_item.name}"
       puts @current_item.collect_description + "\n\n"
     end
   end
@@ -142,16 +141,18 @@ class Game
       elsif @current_item.is_a? ScoreItem
           # Item adjusts score
           @score += @current_item.score
-          puts "You now have a guest rating of #{@score}"
-          puts @star1.encode('utf-8') * @score # print star rating
-          @player.remove_item(command)
-          @used_items << command
-          puts "\n#{@current_item.use_description}\n"
-          # Score reaches 0
-          if @score == 0
-            puts "You have a guest rating of 0."
-            puts "The g-host has killed you.".colorize(:color => :white, :background => :red)
-            run_game = false
+          if @score == 1
+            # Score reaches 0
+            puts "\nYour guest rating dropped too low."
+            puts "\nThe gHost has killed you.".colorize(:color => :white, :background => :red)
+            sleep(2.5)
+            system('clear')
+            @run_game = false
+          else
+            puts "\n#{@current_item.use_description}\n\n"
+            puts "You now have a guest rating of #{@score}".colorize(:blue)
+            puts @star1.encode('utf-8') * @score # print star rating
+            @player.remove_item(command)
           end
       end
     else  

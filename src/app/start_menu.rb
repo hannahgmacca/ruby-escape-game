@@ -1,9 +1,6 @@
 require 'tty-prompt'
 require "tty-progressbar"
-require 'artii'
-require 'gosu'
 require_relative 'game'
-
 
 class StartMenu
     def initialize
@@ -29,6 +26,7 @@ class StartMenu
                 @game = Game.new
                 @game.run
             elsif user_select == "Quit"
+                system('clear')
                 exit
             end
         end
