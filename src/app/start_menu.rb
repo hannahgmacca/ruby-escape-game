@@ -14,7 +14,7 @@ class StartMenu
         while @program_run
             logo
             prompt = TTY::Prompt.new
-            user_select = prompt.select("Would you like to begin?".center(112), %w(Start Leaderboard:InDevelopment Quit))
+            user_select = prompt.select("   Would you like to begin?    ".colorize(:color => :black, :background => :white), %w(Start Leaderboard:InDevelopment Quit))
             if user_select == "Start"
                 system('clear')
                 puts "\n\n\n\n\n\n"
@@ -45,8 +45,10 @@ def logo
     ██╔══██║██║██╔══██╗██╔══██╗██║╚████║██╔══██╗  ██╔══╝░░░╚═══██╗██║░░██╗██╔══██║██╔═══╝░██╔══╝░░
     ██║░░██║██║██║░░██║██████╦╝██║░╚███║██████╦╝  ███████╗██████╔╝╚█████╔╝██║░░██║██║░░░░░███████╗
     ╚═╝░░╚═╝╚═╝╚═╝░░╚═╝╚═════╝░╚═╝░░╚══╝╚═════╝░  ╚══════╝╚═════╝░░╚════╝░╚═╝░░╚═╝╚═╝░░░░░╚══════╝
+".colorize(:red)
+    puts "                                  Terminal Game by Hannah McDonald
     
-".colorize(:blue)
+    "
 end  
 start = StartMenu.new
 start.menu

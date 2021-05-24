@@ -9,8 +9,7 @@ class GameWindow < Gosu::GameWindow
     def initialize(width=320, height=240, fullscreen=false)
         super
         self.caption = 'AirBnB Escape'
-        @music = Gosu::Song.new(
-        self, media_path('app/music.mp3'))
+        @music = Gosu::Song.new(media_path('app/music.mp3'))
         @music.volume = 0.5
         @music.play(true)
         @start = StartMenu.new
@@ -19,3 +18,4 @@ class GameWindow < Gosu::GameWindow
 end
 
 window = GameWindow.new
+window.show

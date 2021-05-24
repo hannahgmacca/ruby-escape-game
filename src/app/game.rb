@@ -180,7 +180,7 @@ class Game
 
   def print_commands
     puts "Your available commands are: ".green
-    puts "\ngo take use help backpack quit\n\n"
+    puts "go take use help backpack quit\n\n"
     puts "Directions:".green
     @current_room.print_exits
     if @current_room.has_items?
