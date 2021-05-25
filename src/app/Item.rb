@@ -27,12 +27,6 @@ class Item
     @is_key
   end
 
-  # Set item to be used before this item
-  # Used to increase difficulty
-  def give_prerequisite(item)
-    @prerequisite = item
-  end
-
   # Return true if name matches string given by user
   def is_item?(item_string)
     return true if @name == item_string

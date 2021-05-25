@@ -11,13 +11,13 @@ require_relative 'player'
 class Game
     attr_accessor :run_game, :current_room, :score, :current_item
 
-  def initialize()
+  def initialize(username)
     initialize_environment
     @player = Player.new()
     @current_room = @lroom
     @score = 3
     @run_game = true
-    # @player_moves = player_moves
+    @username = username
   end
 
   def run
@@ -31,8 +31,9 @@ class Game
   end
 
   def handle_input
-    input = gets.chomp
+    input = STDIN.gets.chomp
     system('clear')
+
     # single word commands
     if input == 'quit'
        @run_game = false
@@ -44,6 +45,7 @@ class Game
     elsif input == 'help'
       puts "Use the commands to move around the AirBnB and use items to help you escape."
     else
+      
       ## double word commands 
       input_arr = input.split(" ")
       if input_arr.size > 1
@@ -78,15 +80,15 @@ class Game
     # livingroom
     @lroom_items = ["charger"]
     @lroom_exits = {:west => "bedroom"}
-    @lroom = Room.new("livingroom","d",true, @lroom_items, @lroom_exits)
+    @lroom = Room.new("livingroom", true, @lroom_items, @lroom_exits)
     # bedroom
     @broom_items = ["phone", "toothbrush"]
     @broom_exits = {:east => "livingroom", :south => "kitchen"}
-    @broom = Room.new("bedroom","d", false, @broom_items, @broom_exits)
+    @broom = Room.new("bedroom", false, @broom_items, @broom_exits)
     # kitchen
     @kitchen_items = ["juice", "key"]
     @kitchen_exits = {:north => "bedroom"}
-    @kitchen = Room.new("kitchen", "d", false, @kitchen_items, @kitchen_exits)
+    @kitchen = Room.new("kitchen", false, @kitchen_items, @kitchen_exits)
 
     # Store items together for validation
     @game_items = [@key, @phone, @charger, @juice, @toothbrush]
@@ -96,20 +98,21 @@ class Game
   end
     
   def take_item(command)
-    if @current_room.has_item?(command) == false # item isn't in current room
-      puts "This item isn't here\n"
-    else
+    if @current_room.has_item?(command) # item isn't in current room
       # Search for instance of this item
       # and store reference to it
       @game_items.each do |item|
         if item.is_item?(command)
           @current_item = item
-        end
+        end 
       end
+      # Remove from room and add to backpack
       @current_room.remove_item(command)
       @player.pick_up(command)
       puts "\nYou have picked up a #{@current_item.name}"
       puts @current_item.collect_description + "\n\n"
+    else
+      puts "This item isn't here\n"
     end
   end
 
@@ -132,6 +135,10 @@ class Game
           puts "You escaped with a rating of: \n"
           puts @star1.encode('utf-8') * @score
           puts "\n\n\nThanks for playing!\n"
+          # Write score to file
+          File.open("leaderboard.txt","w") do |file|
+          file.write "#{@score} #{@username}"
+        end
           sleep(3)
           system('clear')
           @run_game = false
@@ -173,7 +180,7 @@ class Game
           @current_room = room # update current room
         end
       end
-      puts "You have entered the #{@current_room.print_name}!\n"
+      puts "\nYou have entered the #{@current_room.print_name}!\n"
     else  
       puts "That is not a direction you can travel.\n"
     end
@@ -199,7 +206,7 @@ class Game
     welc_arr = [
       "                     Welcome to the AirBnB escape game!                     ",
       "         You have rented an AirBnB for the night and during your stay       ",
-      "                 have realised that you are not the only guest.             ",
+      "           have realised that your super host might be supernatural.         ",
       "In order to survive, you must interact with the apartment and try to escape.",
       "  Each interaction will bring you a hint or a step closer to your freedom.  "]
 
