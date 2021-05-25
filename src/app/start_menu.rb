@@ -1,12 +1,12 @@
 require 'tty-prompt'
 require "tty-progressbar"
-require "tty-table"
+require 'tty-table'
 require_relative 'game'
 
 class StartMenu
     def initialize
         @program_run = true
-        @table = TTY::Table.new ["Name", "Score"]
+        @table = TTY::Table.new(["header1","header2"])
     end
 
     def menu
@@ -37,10 +37,14 @@ class StartMenu
               File.readlines("Leaderboard.txt").each do |line|
                 line_arr = line.split(" ")
                 name = line_arr[0]
+                puts "Player name: #{name}"
                 score = line_arr[1]
-                @table << [name, score]
+                puts "Score: #{score}"
+                sleep(5)
+                system('clear')
+                #@table << [name, score]
               end
-              @table.render(:basic, alignments: [:left, :center])
+             @table.render(:basic, alignments: [:left, :center])
             elsif user_select == "Quit"
               system('clear')
               exit
@@ -64,5 +68,6 @@ def logo
     
     "
 end  
+
 start = StartMenu.new
 start.menu
