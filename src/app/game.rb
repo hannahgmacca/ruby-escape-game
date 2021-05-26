@@ -33,7 +33,6 @@ class Game
   def handle_input
     input = STDIN.gets.chomp
     system('clear')
-
     # single word commands
     if input == 'quit'
        @run_game = false
@@ -44,8 +43,7 @@ class Game
       @player.print_backpack
     elsif input == 'help'
       puts "Use the commands to move around the AirBnB and use items to help you escape."
-    else
-      
+    else 
       ## double word commands 
       input_arr = input.split(" ")
       if input_arr.size > 1
@@ -58,10 +56,10 @@ class Game
           elsif command1 == "go"
             go_room(command2)
           else
-            puts "This is not a valid command"
+            puts "That isn't a valid command"
           end
       else  
-        puts "I'll need more information than that"
+        puts "This is not a valid command"
       end
     end
   end

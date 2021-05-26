@@ -1,5 +1,6 @@
 require 'colorize'
 
+# Class for storing and accessing room information
 class Room
     def initialize(name, isLocked, items, exits)
     @name = name

@@ -5,20 +5,22 @@ class Player
     @backpack = []
   end
 
-  ## add item to players backpack
+  ## Add to backpack
   def pick_up(item)
     @backpack << item
   end
 
-  ## remove item from players backpack (whether to use or drop)
+  # Remove item from backpack
   def remove_item(item)
     @backpack.delete(item)
   end
 
+  # Return true if item is in backpack
   def has_item?(item)
     return true if @backpack.include?(item)
   end
 
+  # Print contents of backpack
   def print_backpack
     if @backpack.empty?
       puts "You aren't carrying anything"
