@@ -1,4 +1,0 @@
-class InvalidCommandError < StandardError
-
-end
- 

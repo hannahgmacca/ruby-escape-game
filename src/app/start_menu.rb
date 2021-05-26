@@ -38,7 +38,7 @@ class StartMenu
               # Reprint logo
               logo
               # Read from leaderboard file and print to TTY table
-              File.readlines("player_scores.txt").each do |line|
+              File.readlines("../../player_scores.txt").each do |line|
                 line_arr = line.split(" ")
                 score = line_arr[0]
                 name = line_arr[1]

@@ -1,4 +1,5 @@
 require 'colorize'
+require "tty-box"
 require_relative 'score_item'
 require_relative 'item'
 require_relative 'room'
@@ -22,7 +23,6 @@ class Game
 
   def run
     print_welcome
-
     while (@run_game)
       puts "\n"
       print_commands
@@ -74,8 +74,10 @@ class Game
     @charger = ScoreItem.new("charger", "You could use this to charge up your phone!", "You've charged the phone.", false, 1)
     @juice = ScoreItem.new("juice", "I'm sure the host won't mind if you finish it off.", "You've just drank all the ghost's favourite juice :( Your AirBnB score has dropped one star.", false, -1)
     @toothbrush = ScoreItem.new("toothbrush", "You sure could use some fresh breath", "Ew! You've grossed out the ghost and lost a star.", false, -1)
+   
     # Store star characters used to print score
     @star1 = "\u2b50"
+
     ## Create rooms and store items
     # livingroom
     @lroom_items = ["charger"]
@@ -135,8 +137,8 @@ class Game
           puts "You escaped with a rating of: \n"
           puts @star1.encode('utf-8') * @score
           puts "\n\n\nThanks for playing!\n"
-          # Write score to file
-          File.open("leaderboard.txt","w") do |file|
+          # Write score to player scores file
+          File.open("player_scores.txt","w") do |file|
           file.write "#{@score} #{@username}"
         end
           sleep(3)
@@ -186,6 +188,7 @@ class Game
     end
   end
 
+  # Print available commands, directions, rooms & items
   def print_commands
     puts "Your available commands are: ".green
     puts "go take use help backpack quit\n\n"
@@ -202,17 +205,18 @@ class Game
     end
   end
 
+  # Print welcome message to user 
+  # formatted in a red bo with a border
   def print_welcome
-    welc_arr = [
-      "                     Welcome to the AirBnB escape game!                     ",
-      "         You have rented an AirBnB for the night and during your stay       ",
-      "           have realised that your super host might be supernatural.         ",
-      "In order to survive, you must interact with the apartment and try to escape.",
-      "  Each interaction will bring you a hint or a step closer to your freedom.  "]
-
-      welc_arr.each do |string|
-        puts string.colorize(:color => :white, :background => :red)
-      end
+    box = TTY::Box.frame(width: 90, height: 14, align: :center, style: {bg: :red}) do
+      "\nWelcome to the AirBnB escape game!\n
+      You have rented an AirBnB for the night and during your stay\n
+      have realised that your super host might be supernatural.\n
+      In order to survive, you must interact with the apartment and try to escape.\n
+      Each interaction will bring you a hint or a step closer to your freedom.\n" 
+    end
+    print box
   end
 
 end
+
