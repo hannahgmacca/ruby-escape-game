@@ -5,8 +5,9 @@ require_relative 'game'
 
 class StartMenu
     def initialize
+        @star1 = "\u2b50"
         @program_run = true
-        @table = TTY::Table.new(["header1","header2"])
+        @table = TTY::Table.new(["Player","Score"], [["Hannah", @star1 * 5]])
     end
 
     def menu
@@ -14,7 +15,7 @@ class StartMenu
             logo
             # Menu prompt
             prompt = TTY::Prompt.new
-            user_select = prompt.select("   Would you like to begin?    ".colorize(:color => :black, :background => :white), %w(Start Leaderboard Quit))
+            user_select = prompt.select("   Would you like to begin?    ".colorize(:color => :black, :background => :white), %w(Start Player\ scores Quit))
             if user_select == "Start"
               system('clear')
               puts "\n\n\n\n\n\n"
@@ -32,19 +33,20 @@ class StartMenu
                 @game = Game.new("Your name")
               end
               @game.run
-            elsif user_select == "Leaderboard"
-              # Read from leaderboard file
-              File.readlines("Leaderboard.txt").each do |line|
+            elsif user_select == "Player\ scores"
+              system('clear')
+              # Reprint logo
+              logo
+              # Read from leaderboard file and print to TTY table
+              File.readlines("player_scores.txt").each do |line|
                 line_arr = line.split(" ")
-                name = line_arr[0]
-                puts "Player name: #{name}"
-                score = line_arr[1]
-                puts "Score: #{score}"
-                sleep(5)
-                system('clear')
-                #@table << [name, score]
+                score = line_arr[0]
+                name = line_arr[1]
+                @table << [name, @star1 * score.to_i]
               end
-             @table.render(:basic, alignments: [:left, :center])
+              puts @table.render(:ascii)
+              sleep(5)
+              system('clear')
             elsif user_select == "Quit"
               system('clear')
               exit
