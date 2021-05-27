@@ -135,10 +135,10 @@ class Game
           puts "You escaped with a rating of: \n"
           puts @star1.encode('utf-8') * @score
           puts "\n\n\nThanks for playing!\n"
+
           # Write score to player scores file
-          File.open("player_scores.txt","w") do |file|
-          file.write "#{@score} #{@username}"
-        end
+          write_to_file("#{@score} #{@username}","player_scores.txt")
+
           sleep(3)
           system('clear')
           @run_game = false
@@ -161,9 +161,9 @@ class Game
             puts @star1.encode('utf-8') * @score # print star rating
             @player.remove_item(command)
           end
+      else  
+        puts "You aren't carrying this item.\n"
       end
-    else  
-      puts "You aren't carrying this item.\n"
     end
   end
 
@@ -215,6 +215,16 @@ class Game
     end
     print box
   end
+
+  def write_to_file(line, my_file)
+    file = File.open(my_file, 'r+')
+    file.each { |l|
+    if l.match("")
+      file.puts(line)
+    end
+    }
+  end
+
 
 end
 
