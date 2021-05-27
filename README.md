@@ -1,6 +1,6 @@
-![AirBNB logo](imgs/logo.png)
+![AirBNB logo](docs/logo.png)
 
-# Installation guide
+# Installation Guide
 
 In order to play the game, please fork and clone the repository from [here]("https://github.com/")
 
@@ -17,7 +17,7 @@ Using the `cd` command allows you to navigate the different directories on your 
 3. Once the terminal is running from the correct directory, run the command:
 
 ```
-./run_app.sh
+./src/run_app.sh
 ```
 
 This file will ensure all gems required by the terminal app are installed before program begins.
@@ -35,7 +35,7 @@ If you use the incorrect items and your score reaches 0, the Airbnb g-host will 
 
 The following map can be used to aid you in your journey, good luck!
 
-![map](imgs/map.png)
+![map](docs/map.png)
 
 ## Purpose
 
@@ -55,7 +55,7 @@ On program load, the user is prompted a message asking for their name. This will
 
 This is completed by a separate function and is before the start menu and new game because it will prevent the user from having to enter their name each time they start a new game. 
 
-![Username](imgs/username.png)
+![Username](docs/username.png)
 
 ## LOADING BAR
 
@@ -70,7 +70,7 @@ They are given a menu prompt of **Start, Player Scores or Quit.**
 Start will create a new game, player scores will show a table of previous games and quit will exit the program. This will loop until quit is selected.
 
 
-![Start Menu](imgs/start_menu.png)
+![Start Menu](docs/start_menu.png)
 
 
 ## SCOREBOARD
@@ -81,7 +81,7 @@ Players can access these scores from the ‘Player Score’ button on the start 
 
 It will show for 5 seconds and then loop back to the start menu.
 
-![Scoreboard](imgs/scoreboard.png)
+![Scoreboard](docs/scoreboard.png)
 
 ## COLLECTING ITEMS
 
@@ -115,7 +115,7 @@ This item must be in players backpack otherwise there will be an error message o
 
 If item is a score item, it will adjust the users Airbnb score accordingly and print the score back to user. If it is a key and they are in the room the key needs to be used, they will win the game.
 
-![Use item](imgs/use.png)
+![Use item](docs/use.png)
 
 ## MOVING ROOMS
 
@@ -136,13 +136,13 @@ If they use a good item then their score will improve, and if they use a bad ite
 
 Their new score is then printed to them using start symbols. 
 
-![Player score](imgs/rating.png)
+![Player score](docs/rating.png)
  
  ## HELP
 
  When the user is seeking a bit of guidance, they can call the `help` command to get them back on their feet.
 
- ![Help](imgs/help.png)
+ ![Help](docs/help.png)
 
 
 # User Interaction
@@ -213,22 +213,22 @@ The control flow diagram has been split up for readibility.
 ## START MENU
 
 
-![Start Menu](imgs/start.png)
+![Start Menu](docs/start.png)
 
 ## HANDLING INPUT
 
 
 ### One word commands
 
-![1 word input](imgs/input1.png)
+![1 word input](docs/input1.png)
 
 ### Double word commands
 
-![2 word input](imgs/input2.png)
+![2 word input](docs/input2.png)
 
 ### COMPLETE VIEW
 
-![compelete flow diagram](imgs/control_flow.png)
+![compelete flow diagram](docs/control_flow.png)
 
 
 # Implementation plan
@@ -239,18 +239,18 @@ I used the labels important, very important and most important to set task prior
 
 ## OVERVIEW
 
-![Overview](imgs/overview.png)
+![Overview](docs/overview.png)
 
 ### SCOREBOARD
 
 The scoreboard had lower priority as it was not necessary to the functionality of the app.
 
-![Scoreboard plan](imgs/scoreboard_trello.png)
+![Scoreboard plan](docs/scoreboard_trello.png)
 
 ### ITEM
 
 The item feature had much higher priority as it was detrimental to game functionality. 
 
-![Item plan](imgs/item.png)
+![Item plan](docs/item.png)
 
 
