@@ -2,7 +2,7 @@
 
 # Installation Guide
 
-In order to play the game, please fork and clone the repository from [here]("https://github.com/")
+In order to play the game, please fork and clone the repository from [here]("https://github.com/hannahgmacca/HauntedAirBnB/")
 
 1. Ensure you have ruby downloaded and installed to your workstation.
 
