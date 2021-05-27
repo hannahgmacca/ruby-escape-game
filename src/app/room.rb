@@ -2,9 +2,8 @@ require 'colorize'
 
 # Class for storing and accessing room information
 class Room
-    def initialize(name, isLocked, items, exits)
+    def initialize(name, items, exits)
     @name = name
-    @isLocked = isLocked
     @items = items
     @exits = exits
     end
@@ -55,7 +54,7 @@ class Room
       return true if @name == room_string
     end
 
-    # Returns true if room has item
+    # Returns room has any items
     def has_items?
       return true if @items.empty? == false
     end

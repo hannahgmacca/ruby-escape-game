@@ -96,15 +96,15 @@ class Game
     # livingroom
     @lroom_items = ["charger"]
     @lroom_exits = {:west => "bedroom"}
-    @lroom = Room.new("livingroom", true, @lroom_items, @lroom_exits)
+    @lroom = Room.new("livingroom", @lroom_items, @lroom_exits)
     # bedroom
     @broom_items = ["phone", "toothbrush"]
     @broom_exits = {:east => "livingroom", :south => "kitchen"}
-    @broom = Room.new("bedroom", false, @broom_items, @broom_exits)
+    @broom = Room.new("bedroom", @broom_items, @broom_exits)
     # kitchen
     @kitchen_items = ["juice", "key"]
     @kitchen_exits = {:north => "bedroom"}
-    @kitchen = Room.new("kitchen", false, @kitchen_items, @kitchen_exits)
+    @kitchen = Room.new("kitchen", @kitchen_items, @kitchen_exits)
 
     # Store items together for validation
     @game_items = [@key, @phone, @charger, @juice, @toothbrush]
