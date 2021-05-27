@@ -223,7 +223,14 @@ class Game
 
   # Opens file and writes new line to it
   def write_to_file(line, my_file)
+    # Error Handling
+    begin
     File.open(my_file, "a") { |f| f.write "#{line}\n" }
+    rescue => e
+      raise FileNotFoundError,"Could not find file"
+      puts e.message
+      puts e.backtrace.inspect
+    end
   end
 
   # Validates item as an item in the game and updates current item

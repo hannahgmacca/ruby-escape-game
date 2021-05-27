@@ -11,8 +11,8 @@ class StartMenu
     @program_run = true
   end
 
-  
   # Displays menu prompt to user
+  # START initiates game
   def menu
     system('clear')
     while @program_run
@@ -21,27 +21,34 @@ class StartMenu
       prompt = TTY::Prompt.new
       user_select = prompt.select("   Would you like to begin?    ".colorize(:color => :black, :background => :white), %w(Start Player\ scores Quit))
       
+      # START
       if user_select == "Start"
         system('clear')
         puts "\n\n\n\n\n\n"
         loading_bar
         system('clear')
         new_game
+
+      # PLAYER SCORES
       elsif user_select == "Player\ scores"
         system('clear')
         # Reprint logo
         logo
+        # New table
         table = TTY::Table.new(["Player","Score"], [["Hannah", @star1 * 5]])
-        # Read from leaderboard file and print to TTY table
+        # Read from leaderboard file and populate table
         File.readlines("player_scores.txt").each do |line|
           line_arr = line.split(" ")
           score = line_arr[0]
           name = line_arr[1]
           table << [name, @star1 * score.to_i]
         end
+        # Display table
         puts table.render(:ascii)
         sleep(5)
         system('clear')
+
+      # QUIT
       elsif user_select == "Quit"
         system('clear')
         exit
@@ -66,6 +73,9 @@ def logo
   "
 end 
 
+# Initiate a new game
+# If player entered a name then score is recorded with that name
+# otherwise is records it as 'anonymous'
 def new_game
   if ARGV[0]
     # User entered a value at the start
