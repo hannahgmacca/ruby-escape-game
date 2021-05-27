@@ -16,7 +16,7 @@ class Game
     initialize_environment
     @player = Player.new()
     @current_room = @lroom
-    @score = 3
+    @score = 3 # user begins with a rating of 3
     @run_game = true
     @username = username
   end
@@ -30,36 +30,52 @@ class Game
     end
   end
 
+  # Class to read input from user and compare again known commands
+  # some commands require two words
   def handle_input
+    # Takes user input
     input = STDIN.gets.chomp
     system('clear')
-    # single word commands
+
+    # Single word commands
+    # QUIT
     if input == 'quit'
        @run_game = false
        puts "Thanks for playing!"
        sleep(3)
        system('clear')
+
+    # BACKPACK
     elsif input == 'backpack'
       @player.print_backpack
+
+    # HELP
     elsif input == 'help'
       puts "Use the commands to move around the AirBnB and use items to help you escape."
-    else 
-      ## double word commands 
+
+    else
+      # Double word commands 
       input_arr = input.split(" ")
+      # User has only entered one word
       if input_arr.size > 1
         command1 = input_arr[0]
         command2 = input_arr[1]
+          # TAKE ITEM
           if command1 == "take"
             take_item(command2)
+          # USE ITEM
           elsif command1 == "use"
             use_item(command2)
+          # GO ROOM
           elsif command1 == "go"
             go_room(command2)
           else
-            puts "That isn't a valid command"
+            # User doesn't specify second command
+            puts "I'll need more information than that!"
           end
-      else  
-        puts "This is not a valid command"
+      else
+        # User enters invalid command word
+        puts "That isn't a valid command"
       end
     end
   end
@@ -96,16 +112,12 @@ class Game
     @game_rooms = [@kitchen, @broom, @lroom]
 
   end
-    
+  
+  # Validates item is in room
+  # Removes item from room and adds to players backpack
   def take_item(command)
     if @current_room.has_item?(command) # item isn't in current room
-      # Search for instance of this item
-      # and store reference to it
-      @game_items.each do |item|
-        if item.is_item?(command)
-          @current_item = item
-        end 
-      end
+      self.new_current_item(command)
       # Remove from room and add to backpack
       @current_room.remove_item(command)
       @player.pick_up(command)
@@ -116,29 +128,20 @@ class Game
     end
   end
 
-  # Validates item is in room and depending on item type
-  # will adjust variables or set winning condition to true
+  # Validates item is in backpack and depending on item type
+  # either adjusts score or finishes game
   def use_item(command)
     if @player.has_item?(command)
-      # Search for instance of this item and 
-      # return object with matching name
-      @game_items.each do |item|
-        if item.is_item?(command)
-          @current_item = item
-        end
-      end
+      # Player is carrying item
+      self.new_current_item(command)
       if @current_item.is_key? 
-        # Item is a key
         if @current_room == @lroom 
-          # Room is livingroom
           puts "Congratulations! You escaped the AirBnB"
           puts "You escaped with a rating of: \n"
           puts @star1.encode('utf-8') * @score
           puts "\n\n\nThanks for playing!\n"
-
           # Write score to player scores file
           write_to_file("#{@score} #{@username}","player_scores.txt")
-
           sleep(3)
           system('clear')
           @run_game = false
@@ -206,25 +209,31 @@ class Game
   # Print welcome message to user 
   # formatted in a red bo with a border
   def print_welcome
-    box = TTY::Box.frame(width: 90, height: 14, align: :center, style: {bg: :red}) do
+    box = TTY::Box.frame(width: 90, height: 17, align: :center, style: {bg: :red}) do
       "\nWelcome to the AirBnB escape game!\n
       You have rented an AirBnB for the night and during your stay\n
       have realised that your super host might be supernatural.\n
       In order to survive, you must interact with the apartment and try to escape.\n
-      Each interaction will bring you a hint or a step closer to your freedom.\n" 
+      Each interaction will bring you a hint or a step closer to your freedom.\n
+      Be careful though, as some items can damage your guest rating.\n
+      If you reach a rating of 0, the g-host will kill you." 
     end
     print box
   end
 
+  # Opens file and writes new line to it
   def write_to_file(line, my_file)
-    file = File.open(my_file, 'r+')
-    file.each { |l|
-    if l.match("")
-      file.puts(line)
-    end
-    }
+    File.open(my_file, "a") { |f| f.write "#{line}\n" }
   end
 
+  # Validates item as an item in the game and updates current item
+  def new_current_item(command)
+    @game_items.each do |item|
+      if item.is_item?(command)
+        @current_item = item
+      end
+    end
+  end
 
 end
 
